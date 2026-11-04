@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VNM Smart Link</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#07111f;color:#eef6ff;font-family:Arial,sans-serif;padding:24px 15px;display:flex;justify-content:center;align-items:center}
+main{width:100%;max-width:470px}.logo{font-size:27px;font-weight:900;color:#54b8ff}.sub{color:#91a8c2;margin:8px 0 24px}
+.card{background:#122139;border:1px solid #29415f;border-radius:20px;padding:21px;margin-bottom:15px}
+h2{font-size:19px;margin:0 0 18px}label{display:block;color:#b8c9dc;font-size:13px;margin:15px 0 8px}
+input{width:100%;padding:15px;border-radius:11px;background:#091629;border:1px solid #3b5270;color:white;font-size:15px;outline:none}
+button{width:100%;padding:15px;border:0;border-radius:11px;background:#238cff;color:white;font-size:15px;font-weight:bold;margin-top:14px}
+button.alt{background:#29415f}.result{display:none;overflow-wrap:anywhere;background:#091629;border-radius:12px;padding:13px;margin-top:15px;color:#72c7ff;font-size:13px;line-height:1.5}
+.small{font-size:12px;color:#94a9c1;line-height:1.6}.status{font-size:13px;color:#6fe3a0;margin-top:12px}
+</style></head>
+<body><main>
+<div class="logo">⚡ VNM SMART LINK</div><div class="sub">Tạo liên kết trung gian • Chia sẻ mọi thiết bị</div>
+<section class="card"><h2>🔗 Tạo link chuyển hướng</h2>
+<label>Địa chỉ website gốc</label><input id="url" type="url" placeholder="https://example.com">
+<label>Tên liên kết (không bắt buộc)</label><input id="name" placeholder="Website của tôi">
+<button id="make">TẠO LIÊN KẾT</button>
+<div class="result" id="result"></div>
+<button class="alt" id="copy" style="display:none">📋 SAO CHÉP LINK</button>
+<div class="status" id="status"></div></section>
+<section class="card"><h2>📌 Cách hoạt động</h2><p class="small">Link được tạo có dạng địa chỉ Render của bạn kèm mã chuyển hướng. Khi người khác mở link, trang sẽ tự chuyển đến website gốc. Không cần cài ứng dụng.</p><p class="small">Chỉ dùng với website đáng tin cậy và không dùng để giả mạo trang đăng nhập.</p></section>
+<p class="small" style="text-align:center">VNM SMART LINK © 2026</p></main>
+<script>
+const $=id=>document.getElementById(id);
+(function(){
+ const p=new URLSearchParams(location.hash.slice(1));
+ const target=p.get("to");
+ if(target){
+  try{const u=new URL(target);if(!["http:","https:"].includes(u.protocol))throw 0;
+   document.body.innerHTML='<main style="margin:auto;text-align:center"><div class="logo">VNM SMART LINK</div><p>Đang chuyển hướng đến website...</p></main>';
+   location.replace(u.href);
+  }catch(e){document.body.innerHTML="<p>Liên kết không hợp lệ.</p>";}
+ }
+})();
+let made="";
+$("make").onclick=()=>{
+ let u;try{u=new URL($("url").value.trim());if(!["http:","https:"].includes(u.protocol))throw 0;}catch(e){alert("Vui lòng nhập URL hợp lệ, bắt đầu bằng https:// hoặc http://");return;}
+ made=location.origin+location.pathname+"#to="+encodeURIComponent(u.href);
+ $("result").style.display="block";$("result").textContent=($("name").value.trim()?$("name").value.trim()+" — ":"")+made;
+ $("copy").style.display="block";$("status").textContent="✓ Đã tạo link. Có thể sao chép để chia sẻ.";
+};
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(made);$("status").textContent="✓ Đã sao chép!";}catch(e){prompt("Sao chép liên kết:",made);}};
+</script></body></html>
